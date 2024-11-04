@@ -1,0 +1,27 @@
+node_modules
+.env
+/out
+/script
+/images
+/broadcast
+/artifacts
+/metadata
+/cache
+/cache_forge
+/ignition
+lcov.info
+
+# Hardhat files
+/cache
+/artifacts
+
+# TypeChain files
+/typechain
+/typechain-types
+
+# solidity-coverage files
+/coverage
+/coverage.json
+
+# Hardhat Ignition default folder for deployments against a local node
+ignition/deployments/chain-31337
