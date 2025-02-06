@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.26;
 
-import "./ERC1155Custom.sol";
-import "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import {ERC1155Custom, IERC1155Receiver} from "./ERC1155Custom.sol";
+import {IERC20Errors} from "@openzeppelin/contracts/interfaces/draft-IERC6093.sol";
 
 /**
  * @title dn404
  * @dev A contract that combines ERC1155 and ERC20 functionality with custom logic.
  * Inherits from ERC1155Custom, IERC20Errors, and Ownable.
  */
-contract dn404 is ERC1155Custom, IERC20Errors, Ownable {
+contract dn404 is ERC1155Custom, IERC20Errors {
     error CannotTransfer();
     error CannotTransferMix();
     error ArrayExceedsLimit();
@@ -58,7 +57,7 @@ contract dn404 is ERC1155Custom, IERC20Errors, Ownable {
         string memory symbol_,
         string[] memory _uri,
         uint256[] memory ranges
-    ) ERC1155Custom("") Ownable(msg.sender) {
+    ) ERC1155Custom("") {
         require(ranges.length <= 6, ArrayExceedsLimit());
         uint256 value;
         for (uint8 i; i < ranges.length; i++) {
@@ -515,14 +514,3 @@ contract dn404 is ERC1155Custom, IERC20Errors, Ownable {
     }
 
 }
-
-// Current issues:
-
-// 1. Vulnerable to re-assignment attack: if someone assigns their own bills, someone else can 
-// send 1 base-unit (0.000001 token) which would trigger the bills to be reassigned. Need a gas efficient
-// solution here. Potentially an optional "lock" system where user blocks altering of bills (except transferring).
-// If they receive additional ERC20, this would not mint new bills until they reassign or disable the "lock" (not great solution).
-// The more expensive the asset, the less likely this is to happen. Could also reduce decimals of the ERC20
-
-// 2. For safety, cashRange values should be multiples of the initial value (first item in array). This is to prevent
-// any unexpected calculations errors. Risk here is low. Not currently implemented.
